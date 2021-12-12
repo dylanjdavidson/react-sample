@@ -1,0 +1,16 @@
+.search-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin: 20px auto 20px auto;
+    width: 50%;
+    height: 50px;
+}
+
+.search-entry {
+    margin-right: 10px;
+}
+
+.search-button {
+    height: 55px;
+}

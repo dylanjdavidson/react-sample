@@ -1,0 +1,17 @@
+.restaurant-card {
+    display: block;
+    width: 80%;
+    height: fit-content;
+    margin: 10px auto 10px auto;
+}
+
+.card-image {
+    max-width: 20%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.save-button {
+    margin-left: auto;
+    margin-right: auto;
+}

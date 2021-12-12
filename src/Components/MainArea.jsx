@@ -1,17 +1,18 @@
 import React from "react";
 import "./MainArea.css";
 
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 
-import Test from "./Test";
+import SearchTab from "./SearchTab";
+import SavedTab from "./SavedTab";
+
+import { getYelpBusinessResponse, moveElement } from "./helpers";
 
 function TabPanel(props) {
+  // render contents of active tab
   const { children, value, index } = props;
-
   return (
     <div role="tabpanel" hidden={value !== index}>
       {children}
@@ -25,15 +26,46 @@ export default class MainArea extends React.Component {
 
     this.state = {
       activeTabIndex: 0,
+      restaurantsResponse: {},
+      savedRestaurants: [],
     };
   }
+
+  searchForRestaurants = async (params) => {
+    const resp = await getYelpBusinessResponse(params);
+    this.setState({ restaurantsResponse: resp });
+  };
+
+  addRestaurantToSaved = (restaurant) => {
+    const saved = [...this.state.savedRestaurants];
+    if (!saved.some((elem) => elem.id === restaurant.id)) {
+      saved.push(restaurant);
+      this.setState({ savedRestaurants: saved });
+    }
+  };
+
+  removeRestaurantFromSaved = (restaurantId) => {
+    const saved = [...this.state.savedRestaurants];
+    const updatedSaved = saved.filter((restaurant) => {
+      return restaurant.id !== restaurantId;
+    });
+    this.setState({ savedRestaurants: updatedSaved });
+  };
+
+  moveRestaurantInSavedList = (restaurantId, moveUp) => {
+    const saved = [...this.state.savedRestaurants];
+    const index = saved.find((elem) => elem.id === restaurantId);
+    const updatedSaved = moveElement(saved, index, moveUp);
+    this.setState({ savedRestaurants: updatedSaved });
+  };
 
   handleTabChange = (event, newValue) => {
     this.setState({ activeTabIndex: newValue });
   };
 
   render() {
-    const { activeTabIndex } = this.state;
+    const { activeTabIndex, restaurantsResponse, savedRestaurants } =
+      this.state;
     return (
       <div>
         <header>
@@ -52,19 +84,27 @@ export default class MainArea extends React.Component {
             </Tabs>
           </Box>
           <TabPanel value={activeTabIndex} index={0}>
-            <Test />
+            <SearchTab
+              searchForRestaurants={this.searchForRestaurants}
+              addRestaurantToSaved={this.addRestaurantToSaved}
+              restaurantsResponse={restaurantsResponse}
+            />
           </TabPanel>
           <TabPanel value={activeTabIndex} index={1}>
-            tab 2
+            <SavedTab
+              savedRestaurants={savedRestaurants}
+              removeRestaurantFromSaved={this.removeRestaurantFromSaved}
+              moveRestaurantInSavedList={this.moveRestaurantInSavedList}
+            />
           </TabPanel>
         </div>
-        <div className="card-container">
+        {/* <div className="card-container">
           <Card>
             <CardContent>
               <p>card text</p>
             </CardContent>
           </Card>
-        </div>
+        </div> */}
       </div>
     );
   }
