@@ -1,0 +1,9 @@
+.card-container {
+    width: 80%;
+    height: fit-content;
+    margin: 20px auto 20px auto;
+}
+
+.card-container div:hover {
+    background-color: grey;
+}
